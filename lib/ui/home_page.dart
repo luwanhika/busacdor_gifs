@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(12),
             child: TextField(
               decoration: InputDecoration(
                   labelText: "Pesquise Aqui!",
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
             child: FutureBuilder(
               future: _getGifs(),
               builder: (context, snapshot) {
-                switch(snapshot.connectionState) {
+                switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                   case ConnectionState.none:
                     return Container(
@@ -76,9 +76,11 @@ class _HomePageState extends State<HomePage> {
                         strokeWidth: 5,
                       ),
                     );
-                    default:
-                      if(snapshot.hasError) return Container();
-                      else return _createGifTable(context, snapshot);
+                  default:
+                    if (snapshot.hasError)
+                      return Container();
+                    else
+                      return _createGifTable(context, snapshot);
                 }
               },
             ),
@@ -88,7 +90,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot){
-
+  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot) {
+    return GridView.builder(
+        padding: EdgeInsets.all(14),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemCount: snapshot.data["data"].length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            child: Image.network(
+              snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+              height: 300,
+              fit: BoxFit.cover,
+            ),
+          );
+        });
   }
 }
